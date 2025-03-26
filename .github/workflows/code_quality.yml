@@ -1,0 +1,43 @@
+name: Code Quality & Security
+
+on:
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  quality-security-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Validate SONAR_TOKEN
+        run: |
+          if [ -z "${{ secrets.SONAR_TOKEN }}" ]; then
+            echo "SONAR_TOKEN is not set. Please configure it in the repository secrets.";
+            exit 1;
+          fi
+
+      - name: Run SonarQube Analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          npm install -g sonar-scanner
+          sonar-scanner -Dsonar.projectKey=sonique -Dsonar.organization=seu-org -Dsonar.host.url=https://sonarcloud.io
+
+      - name: Run Dependency Check
+        run: |
+          npm install -g dependency-check
+          dependency-check --project "Sonique" --out .
+
+      - name: Check results
+        run: cat dependency-check-report.html
