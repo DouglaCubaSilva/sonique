@@ -1,0 +1,20 @@
+@startuml
+
+actor User
+participant "Frontend" as FE
+participant "Subscription Service" as SS
+participant "Payment Gateway" as PG
+participant "Database" as DB
+
+User -> FE : Selects subscription plan
+FE -> SS : Send subscription request
+SS -> PG : Redirect user to payment gateway
+User -> PG : Enter payment details
+PG -> PG : Process payment
+PG -> SS : Send payment confirmation
+SS -> DB : Store subscription details
+DB --> SS : Confirmation saved
+SS -> FE : Update user subscription status
+FE -> User : Show confirmation message
+
+@enduml

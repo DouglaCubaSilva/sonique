@@ -1,0 +1,66 @@
+@startuml
+
+!define TABLE #ffcc00
+
+entity "users" as users {
+    * id : UUID
+    --
+    * username : STRING
+    * email : STRING
+    password_hash : STRING
+    created_at : TIMESTAMP
+}
+
+entity "songs" as songs {
+    * id : UUID
+    --
+    * title : STRING
+    artist : STRING
+    album : STRING
+    duration : INT
+    url : STRING
+    created_at : TIMESTAMP
+}
+
+entity "remixes" as remixes {
+    * id : UUID
+    --
+    * user_id : UUID
+    * song_id : UUID
+    name : STRING
+    duration : INT
+    remix_data : JSON
+    created_at : TIMESTAMP
+}
+
+entity "playlists" as playlists {
+    * id : UUID
+    --
+    * user_id : UUID
+    name : STRING
+    created_at : TIMESTAMP
+}
+
+entity "playlist_songs" as playlist_songs {
+    * playlist_id : UUID
+    * song_id : UUID
+}
+
+entity "recommendations" as recommendations {
+    * id : UUID
+    --
+    * user_id : UUID
+    * song_id : UUID
+    score : FLOAT
+    created_at : TIMESTAMP
+}
+
+users ||--o{ playlists : owns
+users ||--o{ remixes : creates
+users ||--o{ recommendations : receives
+playlists ||--o{ playlist_songs : contains
+songs ||--o{ remixes : based_on
+songs ||--o{ recommendations : suggested
+playlist_songs }|--|| songs : includes
+
+@enduml

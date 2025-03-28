@@ -1,0 +1,62 @@
+@startuml
+
+actor User
+participant "Frontend" as FE
+participant "User Service" as US
+participant "Authentication Service" as AS
+participant "Database" as DB
+
+== User Registration ==
+User -> FE: Complete registration form
+FE -> US: Send data to creation account
+US -> DB: Verify if email is unique
+alt Email already exists
+    DB -> US: Return error "Email already exists"
+    US -> FE: Show error message
+else Email is unique
+    DB -> US: Save user data
+    US -> AS: Generate token
+    AS -> US: Save token
+    US -> FE: Return success
+end
+
+== User Login ==
+User -> FE: Complete login form
+FE -> AS: Send data to authenticate
+AS -> DB: Verify credentials
+alt Credentials are invalid
+    DB -> AS: Return error "Invalid credentials"
+    AS -> FE: Show error message
+else Credentials are valid
+    AS -> US: Create session token
+    US -> FE: Return access token
+end
+
+== User Logout ==
+User -> FE: Click on logout button
+FE -> US: Send token to invalidate
+US -> AS: Invalidate token
+AS -> US: Remove token
+US -> FE: Return success
+
+== User Profile ==
+User -> FE: Click on profile button
+FE -> US: Send token to get user data
+US -> DB: Get user data
+US -> FE: Return user data
+
+== User Update ==
+User -> FE: Update user data
+FE -> US: Send token and new data
+US -> DB: Update user data
+US -> FE: Return success
+
+== User Delete ==
+User -> FE: Click on delete button
+FE -> US: Send token to delete account
+US -> DB: Delete user data
+US -> AS: Invalidate token
+AS -> US: Remove token
+US -> FE: Return success
+
+@enduml
