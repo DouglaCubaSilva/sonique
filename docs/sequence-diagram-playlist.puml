@@ -1,0 +1,70 @@
+@startuml
+
+actor User
+participant "Frontend" as FE
+participant "Playlist Service" as PS
+participant "Song Service" as SS
+participant "Database" as DB
+
+== Create Playlist ==
+User -> FE: Open playlist page
+FE -> PS: Request playlist creation
+PS -> DB: Save playlist
+DB --> PS: Confirmation
+PS --> FE: Playlist created
+
+== Playlist Details ==
+User -> FE: Open playlist page
+FE -> PS: Request playlist details
+PS -> DB: Fetch playlist data
+alt Playlist exists
+    DB --> PS: Return playlist data
+    PS --> FE: Display playlist to user
+else Playlist not found
+    DB --> PS: Error - Playlist not found
+    PS --> FE: Show error message
+end
+
+== Add Song to Playlist ==
+User -> FE: Open playlist page
+FE -> PS: Request to add song to playlist
+PS -> SS: Update playlist with song
+SS -> DB: Save song to playlist
+alt Song exists and valid
+    DB --> SS: Confirmation
+    SS --> PS: Song added to playlist
+    PS --> FE: Song added to playlist
+else Song not found or invalid
+    DB --> SS: Error - Song not found
+    SS --> PS: Error - Cannot add song
+    PS --> FE: Show error message
+end
+
+== Remove Song from Playlist ==
+User -> FE: Open playlist page
+FE -> PS: Request to remove song from playlist
+PS -> SS: Remove song from playlist
+SS -> DB: Delete song from playlist
+alt Song exists in playlist
+    DB --> SS: Confirmation
+    SS --> PS: Song removed from playlist
+    PS --> FE: Song removed from playlist
+else Song not found in playlist
+    DB --> SS: Error - Song not in playlist
+    SS --> PS: Error - Cannot remove song
+    PS --> FE: Show error message
+end
+
+== Delete Playlist ==
+User -> FE: Open playlist page
+FE -> PS: Request to delete playlist
+PS -> DB: Delete playlist
+alt Playlist exists
+    DB --> PS: Confirmation
+    PS --> FE: Playlist deleted
+else Playlist not found
+    DB --> PS: Error - Playlist not found
+    PS --> FE: Show error message
+end
+
+@enduml

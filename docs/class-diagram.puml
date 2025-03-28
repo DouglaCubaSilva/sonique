@@ -1,0 +1,59 @@
+@startuml
+
+class User {
+  +id: UUID
+  +name: String
+  +email: String
+  +password: String
+  +subscription: Subscription
+}
+
+class Subscription {
+  +id: UUID
+  +user: User
+  +type: String
+  +status: String
+  +renewalDate: Date
+  +paymentDetails: Payment
+}
+
+class Payment {
+  +id: UUID
+  +amount: Double
+  +paymentDate: Date
+  +status: String
+  +method: String
+}
+
+class Music {
+  +id: UUID
+  +title: String
+  +artist: String
+  +album: String
+  +duration: Double
+  +genre: String
+}
+
+class Playlist {
+  +id: UUID
+  +name: String
+  +user: User
+  +songs: List<Music>
+}
+
+class Mix {
+  +id: UUID
+  +name: String
+  +creator: User
+  +tracks: List<Music>
+  +effects: List<String>
+}
+
+User "1" -- "1" Subscription
+Subscription "1" -- "1" Payment
+User "1" -- "*" Playlist
+User "1" -- "*" Mix
+Playlist "*" -- "*" Music
+Mix "*" -- "*" Music
+
+@enduml

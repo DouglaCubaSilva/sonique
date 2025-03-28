@@ -1,0 +1,68 @@
+@startuml
+
+package "Frontend" {
+  [Web App]
+  [Mobile App]
+}
+
+package "API Gateway" {
+  [API Router]
+}
+
+package "Auth Service" {
+  [Authentication]
+  [Token Management]
+}
+
+package "Mix Service" {
+  [Remix Processor]
+  [Audio Effects Engine]
+}
+
+package "Music Service" {
+  [Music Metadata]
+  [Streaming Handler]
+}
+
+package "Playlist Service" {
+  [Playlist Manager]
+}
+
+package "Recommendation Service" {
+  [AI Recommender]
+  [User Behavior Analyzer]
+}
+
+package "Payment Service" {
+  [Payment Processor]
+  [Subscription Manager]
+}
+
+package "Database" {
+  [User Data]
+  [Music Library]
+  [Remix Storage]
+  [Payment Records]
+}
+
+[Web App] --> [API Router]
+[Mobile App] --> [API Router]
+
+[API Router] --> [Authentication]
+[Authentication] --> [Token Management]
+
+[API Router] --> [Music Metadata]
+[API Router] --> [Streaming Handler]
+[API Router] --> [Playlist Manager]
+[API Router] --> [AI Recommender]
+[API Router] --> [Remix Processor]
+[API Router] --> [Payment Processor]
+
+[Music Metadata] --> [Music Library]
+[Remix Processor] --> [Remix Storage]
+[User Data] <-- [Authentication]
+[AI Recommender] --> [User Behavior Analyzer]
+[Payment Processor] --> [Subscription Manager]
+[Subscription Manager] --> [Payment Records]
+
+@enduml

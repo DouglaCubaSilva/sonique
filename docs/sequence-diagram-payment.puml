@@ -1,0 +1,74 @@
+@startuml
+
+actor User
+participant "Frontend" as FE
+participant "Payment Service" as PS
+participant "Subscription Service" as SS
+participant "Payment Gateway" as PG
+participant "Database" as DB
+
+== Plan choose and checkout ==
+User -> FE: Choose subscription plan
+FE -> PS : Send selected plan and payment data
+PS -> PG : Payment process
+alt Payment approved
+    PG -> PS : Payment approved
+    PS -> SS : Create subscription
+    SS -> DB : Save subscription status
+    SS -> FE : Show subscription success
+else Payment declined
+    PG -> PS : Payment declined
+    PS -> FE : Show payment declined and retry
+end
+
+== Renewal subscription ==
+PS -> DB : Get subscription status
+DB -> PS : Return subscription status
+PS -> PG : Automatic payment process
+alt Renewal approved
+    PG -> PS : Payment approved
+    PS -> SS : Renew subscription
+    SS -> DB : Update subscription status
+    SS -> FE : Show subscription success
+else Renewal declined
+    PG -> PS : Payment declined
+    PS -> SS : Notify subscription expired
+    SS -> DB : Update subscription status
+    SS -> FE : Show message to update payment method
+end
+
+== Cancel subscription ==
+User -> FE : Click cancel subscription
+FE -> SS : Send cancel request
+SS -> DB : Update subscription status
+SS -> FE : Show subscription canceled
+
+== Update payment method ==
+User -> FE : Click update payment method
+FE -> PS : Send new payment data
+PS -> PG : Payment process
+alt Payment approved
+    PG -> PS : Payment approved
+    PS -> SS : Update payment method
+    SS -> DB : Save new payment data
+    SS -> FE : Show payment method updated
+else Payment declined
+    PG -> PS : Payment declined
+    PS -> FE : Show payment declined and retry
+end
+
+== Refund subscription ==
+User -> FE : Click refund subscription
+FE -> PS : Send refund request
+PS -> PG : Refund process
+alt Refund approved
+    PG -> PS : Refund approved
+    PS -> SS : Refund subscription
+    SS -> DB : Update subscription status
+    SS -> FE : Show refund success
+else Refund declined
+    PG -> PS : Refund declined
+    PS -> FE : Show refund declined
+end
+
+@enduml
