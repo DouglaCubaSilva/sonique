@@ -1,0 +1,31 @@
+@startuml
+
+!define BFF #ffcc00
+!define SERVICE #ff9900
+!define DATABASE #ff6600
+
+skinparam linetype polyline
+
+package "Sonique System" {
+    rectangle "API Gateway" as APIGW #ffcc00
+    rectangle "Auth Service" as AUTH #ff9900
+    rectangle "User Service" as USER #ff9900
+    rectangle "Music Service" as MUSIC #ff9900
+    rectangle "Mix Service" as MIX #ff9900
+    rectangle "Recommendation Service" as RECOMMENDATION #ff9900
+    rectangle "Database" as DB #ff6600
+    
+    APIGW --> AUTH : Authentication
+    APIGW --> USER : User Management
+    APIGW --> MUSIC : Music Library
+    APIGW --> MIX : Remix Engine
+    APIGW --> RECOMMENDATION : Personalized Recommendations
+    
+    AUTH --> DB : Store Users & Tokens
+    USER --> DB : User Data
+    MUSIC --> DB : Songs & Metadata
+    MIX --> DB : Remix Data
+    RECOMMENDATION --> DB : User Preferences
+}
+
+@enduml

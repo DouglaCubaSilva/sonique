@@ -1,0 +1,21 @@
+@startuml
+
+actor User
+participant "Frontend" as FE
+participant "Mix Service" as MS
+participant "Music Library" as ML
+participant "Database" as DB
+
+User -> FE : Selects songs & effects
+FE -> MS : Send remix request
+MS -> ML : Fetch selected songs
+ML -> DB : Get song details
+DB --> ML : Return song data
+ML --> MS : Return song files
+MS -> MS : Apply effects & process mix
+MS -> DB : Store remix metadata
+DB --> MS : Confirmation
+MS --> FE : Return remix URL
+FE --> User : Show remix in library
+
+@enduml

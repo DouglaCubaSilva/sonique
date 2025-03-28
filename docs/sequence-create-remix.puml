@@ -1,0 +1,27 @@
+@startuml
+
+autonumber
+
+actor User
+participant "Frontend" as FE
+participant "API Gateway" as APIG
+participant "Auth Service" as AUTH
+participant "Mix Service" as MIX
+participant "Database" as DB
+
+User -> FE : Login request
+FE -> APIG : Forward login request
+APIG -> AUTH : Authenticate user
+AUTH -> APIG : Return auth token
+APIG -> FE : Return auth token
+
+User -> FE : Selects song & edits remix
+FE -> APIG : Send remix data
+APIG -> MIX : Process remix
+MIX -> DB : Save remix details
+DB -> MIX : Confirm save
+MIX -> APIG : Remix processed
+APIG -> FE : Send success response
+FE -> User : Show remix confirmation
+
+@enduml

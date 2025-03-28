@@ -1,0 +1,27 @@
+@startuml
+
+actor User
+participant "Frontend" as FE
+participant "Playback Service" as PS
+participant "Subscription Service" as SS
+participant "Music Library" as ML
+participant "Database" as DB
+
+User -> FE : Selects a song to play
+FE -> PS : Request playback
+PS -> SS : Verify user subscription
+SS -> DB : Check subscription status
+DB --> SS : Subscription status
+alt Subscription invalid
+    PS --> FE : Show subscription required message
+    FE --> User : Prompt to subscribe
+end
+SS --> PS : Access granted
+PS -> ML : Fetch song file
+ML -> DB : Retrieve song metadata
+DB --> ML : Return metadata
+ML --> PS : Stream song to user
+PS --> FE : Send playback stream URL
+FE --> User : Play song in player
+
+@enduml

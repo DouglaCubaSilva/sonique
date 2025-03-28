@@ -1,0 +1,40 @@
+@startuml
+
+actor User
+
+rectangle "Frontend (Web/Mobile)" as Frontend
+rectangle "BFF (Backend for Frontend)" as BFF
+
+package "Microservices" {
+    rectangle "User Service" as UserService
+    rectangle "Music Service" as MusicService
+    rectangle "Mix Service" as MixService
+    rectangle "Playlist Service" as PlaylistService
+    rectangle "Search Service" as SearchService
+}
+
+package "Storage & Security" {
+    database "User Database" as UserDB
+    database "Music Storage" as MusicDB
+    rectangle "SonarQube (Code Quality)" as SonarQube
+    rectangle "Dependency-Check (Security)" as DependencyCheck
+}
+
+User --> Frontend
+Frontend --> BFF
+BFF --> UserService
+BFF --> MusicService
+BFF --> MixService
+BFF --> PlaylistService
+BFF --> SearchService
+
+UserService --> UserDB
+MusicService --> MusicDB
+MixService --> MusicDB
+PlaylistService --> UserDB
+SearchService --> MusicDB
+
+BFF --> SonarQube
+BFF --> DependencyCheck
+
+@enduml
