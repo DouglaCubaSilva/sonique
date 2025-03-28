@@ -1,0 +1,85 @@
+@startuml
+
+entity User {
+  +id: UUID
+  +name: String
+  +email: String
+  +password_hash: String
+  +created_at: DateTime
+  +updated_at: DateTime
+}
+
+entity Subscription {
+  +id: UUID
+  +user_id: UUID
+  +plan: String
+  +status: String
+  +start_date: DateTime
+  +end_date: DateTime
+  +created_at: DateTime
+  +updated_at: DateTime
+}
+
+entity Payment {
+  +id: UUID
+  +user_id: UUID
+  +subscription_id: UUID
+  +amount: Decimal
+  +status: String
+  +payment_method: String
+  +transaction_id: String
+  +created_at: DateTime
+}
+
+entity Music {
+  +id: UUID
+  +title: String
+  +artist: String
+  +album: String
+  +genre: String
+  +duration: Integer
+  +file_url: String
+  +created_at: DateTime
+}
+
+entity Playlist {
+  +id: UUID
+  +user_id: UUID
+  +name: String
+  +description: String
+  +created_at: DateTime
+  +updated_at: DateTime
+}
+
+entity Playlist_Music {
+  +playlist_id: UUID
+  +music_id: UUID
+}
+
+entity Mix {
+  +id: UUID
+  +user_id: UUID
+  +name: String
+  +description: String
+  +created_at: DateTime
+  +updated_at: DateTime
+}
+
+entity Mix_Music {
+  +mix_id: UUID
+  +music_id: UUID
+  +start_time: Integer
+  +end_time: Integer
+}
+
+User ||--|{ Subscription : has
+User ||--|{ Payment : makes
+User ||--|{ Playlist : creates
+User ||--|{ Mix : creates
+Playlist ||--|{ Playlist_Music : contains
+Music ||--|{ Playlist_Music : in
+Mix ||--|{ Mix_Music : contains
+Music ||--|{ Mix_Music : used_in
+Subscription ||--|| Payment : pays_for
+
+@enduml
